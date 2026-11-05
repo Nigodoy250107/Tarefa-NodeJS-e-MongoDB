@@ -1,0 +1,641 @@
+{
+  "info": {
+    "_postman_id": "d62d559a-13c1-453d-8d50-e3ba77410e8a",
+    "name": "API Gerenciamento de Projetos",
+    "description": "22 testes acad?micos: 12 de sucesso e 10 de erro. Execute as requisi??es em ordem com a API conectada ao MongoDB Atlas.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Sucesso (01?12)",
+      "item": [
+        {
+          "name": "01 - Listar projetos",
+          "description": "Esperado: HTTP 200. Retorna os projetos persistidos no MongoDB.",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/projetos",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Resultado esperado', function () { pm.expect(pm.response.json()).to.be.an(\"array\").that.is.not.empty; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02 - Buscar projeto por c?digo",
+          "description": "Esperado: HTTP 200. Retorna o projeto PRJ001.",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/projetos/PRJ001",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Resultado esperado', function () { pm.expect(pm.response.json().codigo).to.eql(\"PRJ001\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03 - Listar tarefas do projeto",
+          "description": "Esperado: HTTP 200. Retorna TAR101 e TAR102 sem alter?-las.",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/projetos/PRJ001/tarefas",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Resultado esperado', function () { pm.expect(pm.response.json().map(t => t.codigo)).to.include(\"TAR101\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "04 - Filtrar por nome",
+          "description": "Esperado: HTTP 200. Pesquisa parcial e sem diferenciar mai?sculas/min?sculas.",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/projetos?nome=Site",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Resultado esperado', function () { pm.expect(pm.response.json().some(p => p.codigo === \"PRJ001\")).to.eql(true); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "05 - Cadastrar projeto tempor?rio",
+          "description": "Esperado: HTTP 201. Cria PRJ900 para validar atualiza??o e exclus?o sem remover os dados iniciais.",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/projetos",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"PRJ900\",\n  \"nome\": \"Projeto tempor?rio\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201', function () { pm.response.to.have.status(201); });",
+                  "pm.test('Resultado esperado', function () { pm.expect(pm.response.json().codigo).to.eql(\"PRJ900\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "06 - Atualizar projeto",
+          "description": "Esperado: HTTP 200. Altera somente o nome de PRJ900.",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/projetos/PRJ900",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Projeto tempor?rio atualizado\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Resultado esperado', function () { pm.expect(pm.response.json().nome).to.eql(\"Projeto tempor?rio atualizado\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "07 - Excluir projeto tempor?rio",
+          "description": "Esperado: HTTP 204. Remove PRJ900 ap?s a atualiza??o; n?o afeta PRJ001?PRJ003.",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/projetos/PRJ900",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 204', function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "08 - Adicionar tarefa tempor?ria",
+          "description": "Esperado: HTTP 201. Adiciona TAR999 a PRJ001 para testar atualiza??o e remo??o.",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/projetos/PRJ001/tarefas",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"TAR999\",\n  \"nome\": \"Tarefa tempor?ria\",\n  \"responsavel\": \"Teste\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201', function () { pm.response.to.have.status(201); });",
+                  "pm.test('Resultado esperado', function () { pm.expect(pm.response.json().codigo).to.eql(\"TAR999\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "09 - Atualizar tarefa",
+          "description": "Esperado: HTTP 200. Atualiza nome e respons?vel sem alterar TAR999.",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/projetos/PRJ001/tarefas/TAR999",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Tarefa tempor?ria atualizada\",\n  \"responsavel\": \"Ana\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Resultado esperado', function () { pm.expect(pm.response.json().codigo).to.eql(\"TAR999\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "10 - Excluir tarefa tempor?ria",
+          "description": "Esperado: HTTP 204. Remove TAR999 e preserva TAR101 e TAR102.",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/projetos/PRJ001/tarefas/TAR999",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 204', function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "11 - Filtrar por c?digo da tarefa",
+          "description": "Esperado: HTTP 200. Encontra PRJ001 por TAR101, que permanece no banco.",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/projetos?tarefa=TAR101",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Resultado esperado', function () { pm.expect(pm.response.json().some(p => p.codigo === \"PRJ001\")).to.eql(true); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "12 - Resumo do projeto",
+          "description": "Esperado: HTTP 200. Retorna contagem das duas tarefas e respons?veis ?nicos.",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/projetos/PRJ001/resumo",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Resultado esperado', function () { pm.expect(pm.response.json().totalTarefas).to.eql(2); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Erros (13?22)",
+      "item": [
+        {
+          "name": "13 - Projeto duplicado",
+          "description": "Esperado: HTTP 409. PRJ001 j? existe.",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/projetos",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"PRJ001\",\n  \"nome\": \"Projeto duplicado\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 409', function () { pm.response.to.have.status(409); });",
+                  "pm.test('Resultado esperado', function () { pm.expect(pm.response.json()).to.have.property(\"erro\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "14 - Nome obrigat?rio",
+          "description": "Esperado: HTTP 400. Rejeita cadastro sem nome.",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/projetos",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"PRJ902\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400', function () { pm.response.to.have.status(400); });",
+                  "pm.test('Resultado esperado', function () { pm.expect(pm.response.json()).to.have.property(\"erro\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "15 - Consultar projeto inexistente",
+          "description": "Esperado: HTTP 404. PRJ404 n?o existe.",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/projetos/PRJ404",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });",
+                  "pm.test('Resultado esperado', function () { pm.expect(pm.response.json()).to.have.property(\"erro\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "16 - Atualizar projeto inexistente",
+          "description": "Esperado: HTTP 404. PRJ404 n?o existe.",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/projetos/PRJ404",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Projeto ausente\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });",
+                  "pm.test('Resultado esperado', function () { pm.expect(pm.response.json()).to.have.property(\"erro\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "17 - Excluir projeto inexistente",
+          "description": "Esperado: HTTP 404. PRJ404 n?o existe.",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/projetos/PRJ404",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });",
+                  "pm.test('Resultado esperado', function () { pm.expect(pm.response.json()).to.have.property(\"erro\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "18 - Tarefa duplicada",
+          "description": "Esperado: HTTP 409. TAR101 j? existe dentro de PRJ001.",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/projetos/PRJ001/tarefas",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"TAR101\",\n  \"nome\": \"Tarefa duplicada\",\n  \"responsavel\": \"Ana\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 409', function () { pm.response.to.have.status(409); });",
+                  "pm.test('Resultado esperado', function () { pm.expect(pm.response.json()).to.have.property(\"erro\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "19 - Projeto da tarefa inexistente",
+          "description": "Esperado: HTTP 404. N?o adiciona tarefa quando o projeto n?o existe.",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/projetos/PRJ404/tarefas",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"TAR904\",\n  \"nome\": \"Tarefa sem projeto\",\n  \"responsavel\": \"Ana\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });",
+                  "pm.test('Resultado esperado', function () { pm.expect(pm.response.json()).to.have.property(\"erro\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "20 - Respons?vel obrigat?rio",
+          "description": "Esperado: HTTP 400. Rejeita tarefa sem respons?vel.",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/projetos/PRJ001/tarefas",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"TAR903\",\n  \"nome\": \"Tarefa sem respons?vel\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400', function () { pm.response.to.have.status(400); });",
+                  "pm.test('Resultado esperado', function () { pm.expect(pm.response.json()).to.have.property(\"erro\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "21 - Atualizar tarefa inexistente",
+          "description": "Esperado: HTTP 404. TAR404 n?o existe em PRJ001.",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/projetos/PRJ001/tarefas/TAR404",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Tarefa ausente\",\n  \"responsavel\": \"Ana\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });",
+                  "pm.test('Resultado esperado', function () { pm.expect(pm.response.json()).to.have.property(\"erro\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "22 - Excluir tarefa inexistente",
+          "description": "Esperado: HTTP 404. TAR404 n?o existe em PRJ001.",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/projetos/PRJ001/tarefas/TAR404",
+            "header": []
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });",
+                  "pm.test('Resultado esperado', function () { pm.expect(pm.response.json()).to.have.property(\"erro\"); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
