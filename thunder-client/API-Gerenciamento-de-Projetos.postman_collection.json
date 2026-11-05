@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "d62d559a-13c1-453d-8d50-e3ba77410e8a",
     "name": "API Gerenciamento de Projetos",
-    "description": "22 testes acad?micos: 12 de sucesso e 10 de erro. Execute as requisi??es em ordem com a API conectada ao MongoDB Atlas.",
+    "description": "22 tests: 12 success and 10 error cases. Execute the requests in order with the API connected to MongoDB Atlas.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -14,11 +14,11 @@
   ],
   "item": [
     {
-      "name": "Sucesso (01?12)",
+      "name": "Sucesso (01-12)",
       "item": [
         {
           "name": "01 - Listar projetos",
-          "description": "Esperado: HTTP 200. Retorna os projetos persistidos no MongoDB.",
+          "description": "Expected HTTP 200. Retorna os projetos persistidos no MongoDB.",
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/projetos",
@@ -38,8 +38,8 @@
           ]
         },
         {
-          "name": "02 - Buscar projeto por c?digo",
-          "description": "Esperado: HTTP 200. Retorna o projeto PRJ001.",
+          "name": "02 - Buscar projeto por codigo",
+          "description": "Expected HTTP 200. Retorna o projeto PRJ001.",
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/projetos/PRJ001",
@@ -60,7 +60,7 @@
         },
         {
           "name": "03 - Listar tarefas do projeto",
-          "description": "Esperado: HTTP 200. Retorna TAR101 e TAR102 sem alter?-las.",
+          "description": "Expected HTTP 200. Retorna TAR101 e TAR102 sem altera-las.",
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/projetos/PRJ001/tarefas",
@@ -81,7 +81,7 @@
         },
         {
           "name": "04 - Filtrar por nome",
-          "description": "Esperado: HTTP 200. Pesquisa parcial e sem diferenciar mai?sculas/min?sculas.",
+          "description": "Expected HTTP 200. Pesquisa parcial sem diferenciar maiusculas e minusculas.",
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/projetos?nome=Site",
@@ -101,8 +101,8 @@
           ]
         },
         {
-          "name": "05 - Cadastrar projeto tempor?rio",
-          "description": "Esperado: HTTP 201. Cria PRJ900 para validar atualiza??o e exclus?o sem remover os dados iniciais.",
+          "name": "05 - Cadastrar projeto temporario",
+          "description": "Expected HTTP 201. Cria PRJ900 para testar atualizacao e exclusao sem remover os dados iniciais.",
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/projetos",
@@ -137,7 +137,7 @@
         },
         {
           "name": "06 - Atualizar projeto",
-          "description": "Esperado: HTTP 200. Altera somente o nome de PRJ900.",
+          "description": "Expected HTTP 200. Altera somente o nome de PRJ900.",
           "request": {
             "method": "PUT",
             "url": "{{baseUrl}}/projetos/PRJ900",
@@ -171,8 +171,8 @@
           ]
         },
         {
-          "name": "07 - Excluir projeto tempor?rio",
-          "description": "Esperado: HTTP 204. Remove PRJ900 ap?s a atualiza??o; n?o afeta PRJ001?PRJ003.",
+          "name": "07 - Excluir projeto temporario",
+          "description": "Expected HTTP 204. Remove PRJ900 apos a atualizacao; nao afeta PRJ001 a PRJ003.",
           "request": {
             "method": "DELETE",
             "url": "{{baseUrl}}/projetos/PRJ900",
@@ -191,8 +191,8 @@
           ]
         },
         {
-          "name": "08 - Adicionar tarefa tempor?ria",
-          "description": "Esperado: HTTP 201. Adiciona TAR999 a PRJ001 para testar atualiza??o e remo??o.",
+          "name": "08 - Adicionar tarefa temporaria",
+          "description": "Expected HTTP 201. Adiciona TAR999 a PRJ001 para testar atualizacao e remocao.",
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/projetos/PRJ001/tarefas",
@@ -227,7 +227,7 @@
         },
         {
           "name": "09 - Atualizar tarefa",
-          "description": "Esperado: HTTP 200. Atualiza nome e respons?vel sem alterar TAR999.",
+          "description": "Expected HTTP 200. Atualiza nome e responsavel sem alterar TAR999.",
           "request": {
             "method": "PUT",
             "url": "{{baseUrl}}/projetos/PRJ001/tarefas/TAR999",
@@ -261,8 +261,8 @@
           ]
         },
         {
-          "name": "10 - Excluir tarefa tempor?ria",
-          "description": "Esperado: HTTP 204. Remove TAR999 e preserva TAR101 e TAR102.",
+          "name": "10 - Excluir tarefa temporaria",
+          "description": "Expected HTTP 204. Remove TAR999 e preserva TAR101 e TAR102.",
           "request": {
             "method": "DELETE",
             "url": "{{baseUrl}}/projetos/PRJ001/tarefas/TAR999",
@@ -281,8 +281,8 @@
           ]
         },
         {
-          "name": "11 - Filtrar por c?digo da tarefa",
-          "description": "Esperado: HTTP 200. Encontra PRJ001 por TAR101, que permanece no banco.",
+          "name": "11 - Filtrar por codigo da tarefa",
+          "description": "Expected HTTP 200. Encontra PRJ001 por TAR101, que permanece no banco.",
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/projetos?tarefa=TAR101",
@@ -303,7 +303,7 @@
         },
         {
           "name": "12 - Resumo do projeto",
-          "description": "Esperado: HTTP 200. Retorna contagem das duas tarefas e respons?veis ?nicos.",
+          "description": "Expected HTTP 200. Retorna a contagem das duas tarefas e responsaveis unicos.",
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/projetos/PRJ001/resumo",
@@ -325,11 +325,11 @@
       ]
     },
     {
-      "name": "Erros (13?22)",
+      "name": "Erros (13-22)",
       "item": [
         {
           "name": "13 - Projeto duplicado",
-          "description": "Esperado: HTTP 409. PRJ001 j? existe.",
+          "description": "Expected HTTP 409. PRJ001 ja existe.",
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/projetos",
@@ -363,8 +363,8 @@
           ]
         },
         {
-          "name": "14 - Nome obrigat?rio",
-          "description": "Esperado: HTTP 400. Rejeita cadastro sem nome.",
+          "name": "14 - Nome obrigatorio",
+          "description": "Expected HTTP 400. Rejeita cadastro sem nome.",
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/projetos",
@@ -399,7 +399,7 @@
         },
         {
           "name": "15 - Consultar projeto inexistente",
-          "description": "Esperado: HTTP 404. PRJ404 n?o existe.",
+          "description": "Expected HTTP 404. PRJ404 nao existe.",
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/projetos/PRJ404",
@@ -420,7 +420,7 @@
         },
         {
           "name": "16 - Atualizar projeto inexistente",
-          "description": "Esperado: HTTP 404. PRJ404 n?o existe.",
+          "description": "Expected HTTP 404. PRJ404 nao existe.",
           "request": {
             "method": "PUT",
             "url": "{{baseUrl}}/projetos/PRJ404",
@@ -455,7 +455,7 @@
         },
         {
           "name": "17 - Excluir projeto inexistente",
-          "description": "Esperado: HTTP 404. PRJ404 n?o existe.",
+          "description": "Expected HTTP 404. PRJ404 nao existe.",
           "request": {
             "method": "DELETE",
             "url": "{{baseUrl}}/projetos/PRJ404",
@@ -476,7 +476,7 @@
         },
         {
           "name": "18 - Tarefa duplicada",
-          "description": "Esperado: HTTP 409. TAR101 j? existe dentro de PRJ001.",
+          "description": "Expected HTTP 409. TAR101 ja existe dentro de PRJ001.",
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/projetos/PRJ001/tarefas",
@@ -511,7 +511,7 @@
         },
         {
           "name": "19 - Projeto da tarefa inexistente",
-          "description": "Esperado: HTTP 404. N?o adiciona tarefa quando o projeto n?o existe.",
+          "description": "Expected HTTP 404. Nao adiciona tarefa quando o projeto nao existe.",
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/projetos/PRJ404/tarefas",
@@ -545,8 +545,8 @@
           ]
         },
         {
-          "name": "20 - Respons?vel obrigat?rio",
-          "description": "Esperado: HTTP 400. Rejeita tarefa sem respons?vel.",
+          "name": "20 - Responsavel obrigatorio",
+          "description": "Expected HTTP 400. Rejeita tarefa sem responsavel.",
           "request": {
             "method": "POST",
             "url": "{{baseUrl}}/projetos/PRJ001/tarefas",
@@ -581,7 +581,7 @@
         },
         {
           "name": "21 - Atualizar tarefa inexistente",
-          "description": "Esperado: HTTP 404. TAR404 n?o existe em PRJ001.",
+          "description": "Expected HTTP 404. TAR404 nao existe em PRJ001.",
           "request": {
             "method": "PUT",
             "url": "{{baseUrl}}/projetos/PRJ001/tarefas/TAR404",
@@ -616,7 +616,7 @@
         },
         {
           "name": "22 - Excluir tarefa inexistente",
-          "description": "Esperado: HTTP 404. TAR404 n?o existe em PRJ001.",
+          "description": "Expected HTTP 404. TAR404 nao existe em PRJ001.",
           "request": {
             "method": "DELETE",
             "url": "{{baseUrl}}/projetos/PRJ001/tarefas/TAR404",
